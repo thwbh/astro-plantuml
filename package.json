@@ -25,8 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/axios": "^0.14.4",
-    "axios": "^1.8.4",
-    "plantuml-encoder": "^1.4.0"
+    "axios": "^1.8.4"
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.32.5",

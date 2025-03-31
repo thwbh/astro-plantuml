@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.15.0",
-    "astro": "^4.4.15"
+    "astro": "^4.4.15",
+    "@types/axios": "^0.14.4",
+    "axios": "^1.8.4"
   }
 } 
