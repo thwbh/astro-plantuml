@@ -1,0 +1,40 @@
+{
+  "name": "astro-plantuml",
+  "version": "0.1.0",
+  "description": "PlantUML integration for Astro",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "preview": "astro dev",
+    "astro:preview": "astro preview"
+  },
+  "keywords": [
+    "astro",
+    "astro-integration",
+    "plantuml",
+    "uml",
+    "diagrams"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@types/axios": "^0.14.4",
+    "axios": "^1.8.4",
+    "plantuml-encoder": "^1.4.0"
+  },
+  "devDependencies": {
+    "@astrojs/starlight": "^0.32.5",
+    "@types/node": "^20.11.24",
+    "astro": "^5.5.6",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "astro": "^5.5.6"
+  }
+}
