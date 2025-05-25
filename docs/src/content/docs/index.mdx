@@ -1,0 +1,56 @@
+---
+title: astro-plantuml
+description: Create PlantUML diagrams in your Astro documentation with ease.
+template: splash
+hero:
+  tagline: Add beautiful PlantUML diagrams to your Astro documentation
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: Get Started
+      link: /usage/
+      icon: right-arrow
+    - text: View Examples
+      link: /usage/#examples
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Quick Start
+
+<CardGrid stagger>
+	<Card title="1. Install the package" icon="rocket">
+		Get started by installing the package with npm:
+		```bash
+		npm install astro-plantuml
+		```
+	</Card>
+
+	<Card title="2. Add the integration" icon="setting">
+		Add astro-plantuml to your Astro config:
+		```js
+		import plantuml from 'astro-plantuml';
+		
+		export default defineConfig({
+		  integrations: [plantuml()],
+		});
+		```
+	</Card>
+
+	<Card title="3. Create your first diagram" icon="pen">
+		Add a PlantUML diagram using the code fence:
+		```plantuml
+		@startuml
+		Alice -> Bob: Hello
+		Bob --> Alice: Hi there!
+		@enduml
+		```
+	</Card>
+
+	<Card title="4. Explore examples" icon="open-book">
+		Check out more examples like sequence diagrams, class diagrams, and more in our [examples section](/usage/#examples).
+	</Card>
+
+</CardGrid>

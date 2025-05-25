@@ -1,11 +1,6 @@
 {
     "name": "Astro Dev Container",
-    "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:0-14",
-    "features": {
-        "ghcr.io/devcontainers/features/node:1": {
-            "version": "16"
-        }
-    },
+    "image": "node:23-slim",
     "customizations": {
         "vscode": {
             "extensions": [

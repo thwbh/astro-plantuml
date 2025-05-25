@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "description": "PlantUML integration for Astro",
   "type": "module",
-  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -17,11 +22,13 @@
   "keywords": [
     "astro",
     "astro-integration",
+    "withastro",
     "plantuml",
     "uml",
-    "diagrams"
+    "diagrams",
+    "visualization"
   ],
-  "author": "Your Name",
+  "author": "Jose Sebastian <josesaby@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@types/axios": "^0.14.4",

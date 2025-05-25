@@ -1,17 +1,17 @@
 {
-  "name": "astro-plantuml-docs",
-  "version": "0.1.0",
-  "private": true,
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.15.0",
-    "astro": "^4.4.15",
-    "@types/axios": "^0.14.4",
-    "axios": "^1.8.4"
+    "@astrojs/starlight": "^0.32.5",
+    "astro": "^5.5.3",
+    "sharp": "^0.32.5"
   }
-} 
+}
