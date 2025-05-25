@@ -13,6 +13,6 @@
   "license": "MIT",
   "dependencies": {
     "astro": "^5.5.6",
-    "astro-plantuml": "file:.."
+    "astro-plantuml": "^0.1.1"
   }
 }
