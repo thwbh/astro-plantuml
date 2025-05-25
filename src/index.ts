@@ -30,9 +30,10 @@ export default function astroPlantUML(options: PlantUMLOptions = {}): AstroInteg
         // Add our plugin to the array
         updateConfig({
           markdown: {
+            ...config.markdown,
             rehypePlugins: [
               ...existingRehypePlugins,
-              [createPlugin, resolvedOptions]
+              createPlugin(resolvedOptions)
             ]
           }
         });

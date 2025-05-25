@@ -1,4 +1,4 @@
-import type { Root, Element, Parent } from 'hast';
+import type { Root, Element, Parent, Text } from 'hast';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 import axios from 'axios';
@@ -31,7 +31,7 @@ export function createPlugin(options: PlantUMLOptions = {}): Plugin<[], Root> {
 
       // First pass: collect all PlantUML code blocks
       try {
-        visit(tree, 'element', (node: Element, index: number | null, parent: Parent | null) => {
+        visit(tree, 'element', (node: Element, index?: number, parent?: Parent) => {
           if (node && parent && typeof index === 'number' && isPlantUMLBlock(node, language)) {
             codeBlocks.push({
               node,
@@ -54,7 +54,8 @@ export function createPlugin(options: PlantUMLOptions = {}): Plugin<[], Root> {
       for (const { node, parent, index, codeNode } of codeBlocks) {
         try {
           // Get the PlantUML content
-          const content = codeNode.children?.[0]?.value as string | undefined;
+          const textNode = codeNode.children?.[0] as Text | undefined;
+          const content = textNode?.value;
           if (!content) {
             console.warn('Empty PlantUML content found');
             continue;
@@ -108,6 +109,7 @@ export function createPlugin(options: PlantUMLOptions = {}): Plugin<[], Root> {
               {
                 type: 'element',
                 tagName: 'p',
+                properties: {},
                 children: [
                   {
                     type: 'text',
