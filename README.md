@@ -2,6 +2,11 @@
 
 An Astro integration for rendering PlantUML diagrams in your markdown files. This integration automatically converts PlantUML code blocks into beautiful diagrams using the PlantUML server.
 
+## Demo Sites
+
+🌐 **[Starlight Demo](https://astro-starlight-plantuml-demo.netlify.app/)** ([GitHub](https://github.com/joesaby/astro-starlight-plantuml-demo)) - Full documentation site using Starlight theme
+🌐 **[Plain Astro Demo](https://astro-plantuml-demo.netlify.app/)** ([GitHub](https://github.com/joesaby/astro-plantuml-demo)) - Simple Astro site with PlantUML examples
+
 ## Features
 
 - 🎨 Automatic conversion of PlantUML code blocks to images
@@ -16,6 +21,10 @@ An Astro integration for rendering PlantUML diagrams in your markdown files. Thi
 ```bash
 npm install astro-plantuml
 ```
+
+## Quick Start
+
+Check out our demo sites to see various PlantUML diagrams in action!
 
 ## Usage
 
@@ -208,6 +217,30 @@ If there's an error generating a diagram, the integration will:
 1. Display an error message
 2. Keep the original code block for reference
 3. Add the `plantuml-error` class to the error container
+
+## Changelog
+
+### v0.1.2
+- 🐛 Fixed PlantUML rendering by switching from rehype to remark plugin
+- 🚀 Plugin now processes code blocks before syntax highlighting
+- 🔧 Fixed encoding issue with PlantUML server
+- 🧹 Removed deprecated rehype plugin
+
+### v0.1.1
+- 🎉 Initial release
+- ✨ Basic PlantUML rendering functionality
+- 🎨 Configurable options
+
+## Demo
+
+Visit our demo sites to see:
+- Sequence diagrams
+- Class diagrams
+- Activity diagrams
+- State diagrams
+- Component diagrams
+- Mind maps
+- Gantt charts
 
 ## License
 

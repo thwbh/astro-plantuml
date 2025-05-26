@@ -8,11 +8,10 @@ This is an Astro integration that automatically converts PlantUML code blocks in
 astro-plantuml/
 ├── src/               # Source TypeScript files
 │   ├── index.ts      # Main integration entry point
-│   ├── plugin.ts     # Rehype plugin implementation
+│   ├── remark-plugin.ts  # Remark plugin implementation
 │   ├── types.ts      # TypeScript type definitions
 │   └── utils.ts      # Utility functions (base64 encoding)
 ├── dist/             # Compiled JavaScript files (generated)
-├── example/          # Demo application for Netlify
 └── docs/             # Documentation site (Starlight)
 ```
 
@@ -30,32 +29,27 @@ npm run build
 
 # Watch mode for development
 npm run dev
-
-# Test in example app
-cd example
-npm install
-npm run dev
 ```
 
 ## Testing & Validation
 Before committing changes:
 1. Run `npm run build` to ensure TypeScript compilation succeeds
-2. Test the integration in the example app
+2. Test the integration in your Astro project
 3. Verify all PlantUML diagram types render correctly
 
 ## Integration Architecture
-The integration uses Astro's hook system to inject a rehype plugin that:
-1. Finds code blocks with language "plantuml"
-2. Extracts the PlantUML content
-3. Encodes it using PlantUML's custom base64 encoding
+The integration uses Astro's hook system to inject a remark plugin that:
+1. Finds code blocks with language "plantuml" in the markdown AST
+2. Extracts the PlantUML content before syntax highlighting
+3. Encodes it using PlantUML's custom base64 encoding with raw deflate
 4. Fetches the diagram from the PlantUML server
-5. Replaces the code block with an image element
+5. Replaces the code block with an HTML image element
 
 ## Publishing Checklist
 - [ ] Update version in package.json
 - [ ] Ensure "withastro" keyword is present
 - [ ] Run `npm run build`
-- [ ] Test in example app
+- [ ] Test the integration
 - [ ] Update README with any new features
 - [ ] Run `npm publish`
 
@@ -63,3 +57,12 @@ The integration uses Astro's hook system to inject a rehype plugin that:
 1. **Build errors**: Ensure all dependencies are installed
 2. **Diagram rendering fails**: Check PlantUML server URL and network connectivity
 3. **TypeScript errors**: Run `npm run build` to catch type issues early
+
+## Recent Changes (v0.1.2)
+- Switched from rehype to remark plugin to process PlantUML before syntax highlighting
+- Fixed encoding by using `deflateRawSync` instead of `deflateSync`
+- The remark plugin runs before Shiki to prevent language warnings
+
+## Important Notes
+- The package is published to npm as `astro-plantuml` version 0.1.2
+- Documentation site available in the /docs directory

@@ -1,5 +1,5 @@
 import type { AstroIntegration, AstroConfig } from 'astro';
-import { createPlugin } from './plugin.js';
+import { createRemarkPlugin } from './remark-plugin.js';
 import type { PlantUMLOptions } from './types.js';
 
 export { type PlantUMLOptions } from './types.js';
@@ -12,7 +12,7 @@ export { type PlantUMLOptions } from './types.js';
  */
 export default function astroPlantUML(options: PlantUMLOptions = {}): AstroIntegration {
   const resolvedOptions: PlantUMLOptions = {
-    serverUrl: options.serverUrl || 'http://www.plantuml.com/plantuml/png/',
+    serverUrl: options.serverUrl || 'https://www.plantuml.com/plantuml/png/',
     timeout: options.timeout || 10000,
     addWrapperClasses: options.addWrapperClasses !== false,
     ...options
@@ -22,18 +22,18 @@ export default function astroPlantUML(options: PlantUMLOptions = {}): AstroInteg
     name: 'astro-plantuml',
     hooks: {
       'astro:config:setup': ({ updateConfig, config }: { updateConfig: (newConfig: Partial<AstroConfig>) => void, config: AstroConfig }) => {
-        // Get existing rehype plugins or initialize empty array
-        const existingRehypePlugins = Array.isArray(config.markdown?.rehypePlugins) 
-          ? config.markdown.rehypePlugins 
+        // Get existing remark plugins or initialize empty array
+        const existingRemarkPlugins = Array.isArray(config.markdown?.remarkPlugins) 
+          ? config.markdown.remarkPlugins 
           : [];
         
         // Add our plugin to the array
         updateConfig({
           markdown: {
             ...config.markdown,
-            rehypePlugins: [
-              ...existingRehypePlugins,
-              createPlugin(resolvedOptions)
+            remarkPlugins: [
+              ...existingRemarkPlugins,
+              createRemarkPlugin(resolvedOptions)
             ]
           }
         });

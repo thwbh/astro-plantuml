@@ -1,7 +1,7 @@
 {
   "name": "astro-plantuml",
-  "version": "0.1.1",
-  "description": "PlantUML integration for Astro",
+  "version": "0.1.3",
+  "description": "Astro integration that automatically converts PlantUML code blocks in markdown to diagrams. Supports sequence, class, activity, state diagrams and more.",
   "type": "module",
   "exports": {
     ".": {
