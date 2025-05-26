@@ -220,16 +220,96 @@ If there's an error generating a diagram, the integration will:
 
 ## Changelog
 
-### v0.1.2
+### [0.1.2] - 2024-01-26
+#### Fixed
 - 🐛 Fixed PlantUML rendering by switching from rehype to remark plugin
 - 🚀 Plugin now processes code blocks before syntax highlighting
-- 🔧 Fixed encoding issue with PlantUML server
+- 🔧 Fixed encoding issue with PlantUML server (using deflateRawSync instead of deflateSync)
 - 🧹 Removed deprecated rehype plugin
 
-### v0.1.1
+#### Changed
+- Remark plugin runs before Shiki to prevent language warnings
+
+### [0.1.1] - 2024-01-25
+#### Added
 - 🎉 Initial release
 - ✨ Basic PlantUML rendering functionality
-- 🎨 Configurable options
+- 🎨 Configurable options (serverUrl, timeout, addWrapperClasses, language)
+- 📚 Support for all PlantUML diagram types
+- 🔧 Error handling with fallback to original code block
+
+### [0.1.0] - 2024-01-24
+#### Added
+- 🚀 Initial development version
+- ⚡ Core integration with Astro
+- 🎯 Basic PlantUML to image conversion
+
+## Publishing
+
+### Prerequisites
+1. Ensure you have npm publish permissions for the `astro-plantuml` package
+2. Make sure you're logged in to npm: `npm login`
+3. All tests should pass and the package should build successfully
+
+### Publishing Steps
+
+1. **Update Version**
+   ```bash
+   # For patch release (bug fixes): 0.1.2 -> 0.1.3
+   npm version patch
+   
+   # For minor release (new features): 0.1.2 -> 0.2.0
+   npm version minor
+   
+   # For major release (breaking changes): 0.1.2 -> 1.0.0
+   npm version major
+   ```
+
+2. **Build the Package**
+   ```bash
+   npm run build
+   ```
+
+3. **Test Locally** (optional but recommended)
+   ```bash
+   # Create a tarball
+   npm pack
+   
+   # Test in another project
+   npm install /path/to/astro-plantuml-0.1.3.tgz
+   ```
+
+4. **Update Changelog**
+   - Add new version entry to the Changelog section above
+   - Document all changes, fixes, and new features
+   - Use semantic versioning and date format
+
+5. **Commit Changes**
+   ```bash
+   git add .
+   git commit -m "Release v0.1.3"
+   git push origin main
+   ```
+
+6. **Create Git Tag**
+   ```bash
+   git tag v0.1.3
+   git push origin v0.1.3
+   ```
+
+7. **Publish to npm**
+   ```bash
+   npm publish
+   ```
+
+8. **Verify Publication**
+   - Check npm page: https://www.npmjs.com/package/astro-plantuml
+   - Test installation: `npm install astro-plantuml@latest`
+
+### Post-Publishing
+1. Update demo sites with the new version
+2. Create a GitHub release with release notes
+3. Announce in relevant channels (Discord, Twitter, etc.)
 
 ## Demo
 
