@@ -19,7 +19,7 @@ An Astro integration for rendering PlantUML diagrams in your markdown files. Thi
 ## Installation
 
 ```bash
-npm install astro-plantuml
+npx astro add astro-plantuml
 ```
 
 ## Quick Start
