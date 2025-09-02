@@ -97,14 +97,17 @@ stop
 
 ### Pre-generating Diagrams
 
-For faster builds and offline capability, you can pre-generate diagrams:
+For faster builds and offline capability, you can pre-generate diagrams with explicit options:
 
 ```bash
 # Generate diagrams for all markdown files
-npx astro-plantuml generate
+npx astro-plantuml generate --format svg
 
-# Generate for specific patterns
-npx astro-plantuml generate "src/pages/**/*.md"
+# Generate for specific patterns  
+npx astro-plantuml generate "src/pages/**/*.md" --format png --server http://localhost:8080/png/
+
+# Generate with custom output directory
+npx astro-plantuml generate --output diagrams --format svg
 ```
 
 Enable local file lookup in your configuration:
@@ -142,7 +145,7 @@ Then style with CSS:
 
 1. **Use meaningful names**: Give your diagrams and elements clear, descriptive names
 2. **Choose the right format**: Use SVG for scalable, styleable diagrams; PNG for simple use cases
-3. **Pre-generate for production**: Use `npx astro-plantuml generate` for faster, more reliable builds
+3. **Pre-generate for production**: Use `npx astro-plantuml generate --format svg` for faster, more reliable builds
 4. **Use local servers**: Run a local PlantUML server during development for speed
 5. **Keep it simple**: Start with basic diagrams and add complexity as needed
 6. **Use comments**: Add comments to explain complex parts of your diagrams

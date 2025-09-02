@@ -2,32 +2,57 @@
 
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
-import { createGeneratePlugin } from '../dist/remark-plugin-generate.js';
+import remarkStringify from 'remark-stringify';
+import { generateDiagramsFromAst } from '../dist/remark-cli.js';
 import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
 
 /**
  * Generate PlantUML diagrams for markdown files
- * Usage: npx astro-plantuml generate [pattern]
+ * Usage: npx astro-plantuml generate [pattern] [options]
  */
 async function generateDiagrams() {
   const args = process.argv.slice(2);
   
-  // Skip 'generate' command if present
-  const pattern = args[0] === 'generate' ? (args[1] || '**/*.md') : (args[0] || '**/*.md');
+  // Parse arguments
+  let pattern = '**/*.md';
+  let options = {
+    serverUrl: 'https://www.plantuml.com/plantuml/svg/',
+    format: 'svg',
+    diagramsPath: 'diagrams',
+    timeout: 10000
+  };
+
+  let i = 0;
+  if (args[i] === 'generate') i++; // Skip 'generate' command if present
   
-  // Try to read Astro config to get PlantUML options
-  let options = await readAstroConfig();
+  // First non-option argument is the pattern
+  if (args[i] && !args[i].startsWith('--')) {
+    pattern = args[i];
+    i++;
+  }
   
-  // Default configuration if no config found
-  if (!options || Object.keys(options).length === 0) {
-    options = {
-      serverUrl: 'http://localhost:8080/svg/',
-      format: 'svg',
-      diagramsPath: 'diagrams',
-      timeout: 10000
-    };
+  // Parse options
+  while (i < args.length) {
+    const arg = args[i];
+    if (arg === '--format' && args[i + 1]) {
+      options.format = args[i + 1];
+      options.serverUrl = `https://www.plantuml.com/plantuml/${args[i + 1]}/`;
+      i += 2;
+    } else if (arg === '--server' && args[i + 1]) {
+      options.serverUrl = args[i + 1];
+      i += 2;
+    } else if (arg === '--output' && args[i + 1]) {
+      options.diagramsPath = args[i + 1];
+      i += 2;
+    } else if (arg === '--timeout' && args[i + 1]) {
+      options.timeout = parseInt(args[i + 1]);
+      i += 2;
+    } else {
+      console.warn(`Unknown option: ${arg}`);
+      i++;
+    }
   }
 
   console.log('PlantUML Diagram Generator');
@@ -48,10 +73,9 @@ async function generateDiagrams() {
 
     console.log(`Found ${files.length} markdown files`);
 
-    // Create processor with generate plugin
+    // Create processor to parse markdown
     const processor = unified()
-      .use(remarkParse)
-      .use(createGeneratePlugin(options));
+      .use(remarkParse);
 
     // Process each file
     for (const file of files) {
@@ -59,9 +83,10 @@ async function generateDiagrams() {
       
       try {
         const content = fs.readFileSync(file, 'utf8');
-        const vfile = { path: path.resolve(file) };
+        const vfile = { value: content };
+        const tree = processor.parse(vfile);
         
-        await processor.process({ value: content, ...vfile });
+        await generateDiagramsFromAst(tree, path.resolve(file), options);
       } catch (error) {
         console.error(`  Error: ${error.message}`);
       }
@@ -74,56 +99,27 @@ async function generateDiagrams() {
   }
 }
 
-/**
- * Try to read PlantUML configuration from Astro config
- */
-async function readAstroConfig() {
-  const configFiles = [
-    'astro.config.mjs',
-    'astro.config.js', 
-    'astro.config.ts',
-    'astro.config.mts'
-  ];
 
-  for (const configFile of configFiles) {
-    if (fs.existsSync(configFile)) {
-      try {
-        const configUrl = `file://${path.resolve(configFile)}`;
-        const configModule = await import(configUrl);
-        const config = configModule.default;
-        
-        if (config?.integrations) {
-          for (const integration of config.integrations) {
-            if (integration && typeof integration === 'object') {
-              if (integration.name === 'astro-plantuml' || 
-                  (typeof integration === 'function' && integration.name?.includes('plantuml'))) {
-                return integration.options || {};
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.warn(`Warning: Could not read config from ${configFile}`);
-      }
-    }
-  }
-  
-  return {};
-}
-
-// Show usage if no arguments
-if (process.argv.length <= 2) {
+// Show usage if no arguments or help requested
+if (process.argv.length <= 2 || process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log('astro-plantuml generate');
   console.log('');
   console.log('Generate PlantUML diagrams from markdown files');
   console.log('');
   console.log('Usage:');
-  console.log('  npx astro-plantuml generate [pattern]');
+  console.log('  npx astro-plantuml generate [pattern] [options]');
+  console.log('');
+  console.log('Options:');
+  console.log('  --format FORMAT    Output format (svg, png) [default: svg]');
+  console.log('  --server URL       PlantUML server URL');
+  console.log('  --output PATH      Output directory [default: diagrams]');
+  console.log('  --timeout MS       Request timeout in milliseconds [default: 10000]');
   console.log('');
   console.log('Examples:');
   console.log('  npx astro-plantuml generate');
   console.log('  npx astro-plantuml generate "src/**/*.md"');
-  console.log('  npx astro-plantuml generate "docs/*.md"');
+  console.log('  npx astro-plantuml generate "docs/*.md" --format png');
+  console.log('  npx astro-plantuml generate --server http://localhost:8080/png/ --format png');
   process.exit(0);
 }
 

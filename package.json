@@ -39,7 +39,9 @@
     "axios": "^1.8.4",
     "glob": "^10.3.0",
     "unified": "^11.0.0",
-    "remark-parse": "^11.0.0"
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.32.5",

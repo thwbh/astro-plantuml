@@ -112,18 +112,36 @@ plantuml({
 
 ## Pre-generating Diagrams
 
-Use the built-in CLI tool to generate diagrams ahead of time:
+Use the built-in CLI tool to generate diagrams ahead of time. The CLI accepts explicit options, making it independent of your Astro configuration:
 
 ### Command Line Usage
 
 ```bash
-# Generate diagrams for all markdown files
+# Generate diagrams for all markdown files (SVG format, public server)
 npx astro-plantuml generate
 
 # Generate for specific files/patterns
 npx astro-plantuml generate "src/pages/**/*.md"
 npx astro-plantuml generate "docs/*.md"
+
+# Generate PNG format with local server
+npx astro-plantuml generate --format png --server http://localhost:8080/png/
+
+# Generate with custom output directory
+npx astro-plantuml generate --output diagrams --format svg
+
+# Full options example
+npx astro-plantuml generate "src/**/*.md" --format png --server http://localhost:8080/png/ --output diagrams --timeout 15000
 ```
+
+### CLI Options
+
+- `--format FORMAT` - Output format (svg, png) [default: svg]
+- `--server URL` - PlantUML server URL [default: https://www.plantuml.com/plantuml/svg/]
+- `--output PATH` - Output directory [default: diagrams]  
+- `--timeout MS` - Request timeout in milliseconds [default: 10000]
+
+**Note:** The CLI options are independent of your Astro integration configuration, giving you full control over diagram generation.
 
 ### Integration with Build Tools
 
@@ -131,8 +149,9 @@ npx astro-plantuml generate "docs/*.md"
 ```json
 {
   "scripts": {
-    "generate-diagrams": "astro-plantuml generate",
-    "prebuild": "astro-plantuml generate"
+    "generate-diagrams": "astro-plantuml generate --format png --server http://localhost:8080/png/",
+    "generate-diagrams:prod": "astro-plantuml generate --format svg",
+    "prebuild": "npm run generate-diagrams:prod"
   }
 }
 ```
@@ -141,14 +160,20 @@ npx astro-plantuml generate "docs/*.md"
 ```bash
 #!/bin/sh
 echo "Generating PlantUML diagrams..."
-npx astro-plantuml generate
+npx astro-plantuml generate --format png --server http://localhost:8080/png/
 git add diagrams/
 ```
 
 **GitHub Actions:**
 ```yaml
 - name: Generate PlantUML diagrams
-  run: npx astro-plantuml generate
+  run: npx astro-plantuml generate --format svg --output diagrams
+```
+
+**Docker/CI environments:**
+```bash
+# Use public server in environments without local PlantUML server
+npx astro-plantuml generate --format svg --server https://www.plantuml.com/plantuml/svg/
 ```
 
 ## Configuration

@@ -53,7 +53,7 @@ Choose between SVG (scalable, CSS-styleable) or PNG (simple, widely compatible) 
 Pre-generate diagrams during development and use cached files during production builds for improved performance.
 
 ### 🛠️ Built-in CLI Tools
-Use `npx astro-plantuml generate` to pre-generate diagrams as part of your build workflow.
+Use `npx astro-plantuml generate` with explicit options to pre-generate diagrams as part of your build workflow - no configuration reading needed!
 
 ### ⚡ Flexible Workflows
 Support for both server-only and local-file-with-fallback workflows to fit your development process.

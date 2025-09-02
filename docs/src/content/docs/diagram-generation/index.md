@@ -38,60 +38,66 @@ plantuml({
 **Pros:** Fast builds, works offline, no rate limits
 **Cons:** Requires pre-generation step
 
-## Using the Built-in Generator
+## Using the Built-in CLI Generator
 
-The integration includes a command-line tool for generating diagrams:
+The integration includes a command-line tool for generating diagrams with explicit options:
 
 ### Basic Usage
 
 ```bash
-# Generate diagrams for all markdown files
+# Generate diagrams for all markdown files (SVG format, public server)
 npx astro-plantuml generate
 
 # Generate for specific patterns
 npx astro-plantuml generate "src/pages/**/*.md"
 npx astro-plantuml generate "docs/*.md"
 npx astro-plantuml generate "README.md"
+
+# Generate PNG format with local server
+npx astro-plantuml generate --format png --server http://localhost:8080/png/
+
+# Generate with custom output directory
+npx astro-plantuml generate --output diagrams --format svg
+
+# Full options example
+npx astro-plantuml generate "src/**/*.md" --format png --server http://localhost:8080/png/ --output diagrams --timeout 15000
 ```
+
+### CLI Options
+
+The CLI tool accepts explicit options, giving you full control independent of your Astro configuration:
+
+- `--format FORMAT` - Output format (svg, png) [default: svg]
+- `--server URL` - PlantUML server URL [default: https://www.plantuml.com/plantuml/svg/]
+- `--output PATH` - Output directory [default: diagrams]  
+- `--timeout MS` - Request timeout in milliseconds [default: 10000]
 
 The generator will:
 - Find all PlantUML code blocks in markdown files
 - Generate diagrams only for missing/changed content (based on content hash)
-- Save diagrams to the configured `diagramsPath` directory
-- Use the same configuration as your Astro integration
+- Save diagrams to the specified output directory
+- Use the explicit options you provide
 
-### Configuration Detection
+### Flexibility Benefits
 
-The generator automatically reads your Astro configuration:
-
-```js
-// astro.config.mjs
-export default defineConfig({
-  integrations: [
-    plantuml({
-      serverUrl: 'http://localhost:8080/svg/',
-      format: 'svg',
-      diagramsPath: 'diagrams',
-      timeout: 15000
-    })
-  ]
-});
-```
-
-The `npx astro-plantuml generate` command will use these exact settings.
+**Independent Configuration**: CLI options don't need to match your Astro integration settings. This allows for:
+- Different formats for development vs. production
+- Using local servers in development, public servers in CI
+- Custom output directories per environment
 
 ## Integration with Build Tools
 
 ### Package.json Scripts
 
-Add generation to your build process:
+Add generation to your build process with explicit options:
 
 ```json
 {
   "scripts": {
-    "generate-diagrams": "astro-plantuml generate",
-    "prebuild": "astro-plantuml generate",
-    "dev": "astro-plantuml generate && astro dev"
+    "generate-diagrams": "astro-plantuml generate --format png --server http://localhost:8080/png/",
+    "generate-diagrams:prod": "astro-plantuml generate --format svg",
+    "prebuild": "npm run generate-diagrams:prod",
+    "dev": "npm run generate-diagrams && astro dev"
   }
 }
 ```
@@ -104,7 +110,7 @@ Ensure diagrams are always up-to-date:
 # .git/hooks/pre-commit
 #!/bin/sh
 echo "Generating PlantUML diagrams..."
-npx astro-plantuml generate
+npx astro-plantuml generate --format png --server http://localhost:8080/png/
 git add diagrams/
 echo "Diagrams updated"
 ```
@@ -132,7 +138,7 @@ jobs:
       run: npm ci
       
     - name: Generate PlantUML diagrams
-      run: npx astro-plantuml generate
+      run: npx astro-plantuml generate --format svg --output diagrams
       
     - name: Build site
       run: npm run build
@@ -163,8 +169,11 @@ jobs:
 
 3. **Generate Diagrams**: Run generation when content changes
    ```bash
-   # Manual generation
-   npx astro-plantuml generate
+   # Development with local server
+   npx astro-plantuml generate --format svg --server http://localhost:8080/svg/
+   
+   # Production-ready diagrams
+   npx astro-plantuml generate --format svg
    ```
 
 3. **Development**: Run Astro dev server
@@ -191,9 +200,9 @@ diagrams/
 
 ### Common Issues
 
-**Generator not finding config:**
-- Ensure your `astro.config.mjs` exports a default configuration
-- Check that the PlantUML integration is properly configured
+**CLI help and options:**
+- Run `npx astro-plantuml --help` to see all available options
+- Use explicit options rather than relying on configuration detection
 
 **Local server connection errors:**
 - Verify PlantUML server is running on the configured port
