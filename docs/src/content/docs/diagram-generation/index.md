@@ -165,12 +165,9 @@ jobs:
    ```bash
    # Manual generation
    npx astro-plantuml generate
-   
-   # Or add to dev script
-   npm run dev  # if prebuild script is set up
    ```
 
-4. **Development**: Run Astro dev server
+3. **Development**: Run Astro dev server
    ```bash
    npm run dev
    ```

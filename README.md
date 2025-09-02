@@ -84,7 +84,6 @@ class User {
 }
 @enduml
 ```
-```
 
 ## Diagram Generation Workflows
 
@@ -152,38 +151,41 @@ git add diagrams/
   run: npx astro-plantuml generate
 ```
 
-### Development Workflow Example
-
-1. **Development:** Use a local PlantUML server for fast iteration
-   ```bash
-   # Start local PlantUML server
-   docker run -d -p 8080:8080 plantuml/plantuml-server:jetty
-   
-   # Generate diagrams during development
-   npx astro-plantuml generate
-   ```
-
-2. **Production:** Use pre-generated files for fast, reliable builds
-   ```js
-   // astro.config.mjs
-   plantuml({
-     diagramsPath: 'diagrams', // Use local files first
-     serverUrl: 'https://www.plantuml.com/plantuml/svg/' // Fallback
-   })
-   ```
-
 ## Configuration
 
 You can configure the integration with the following options:
+
+**With a PlantUML server:**
 
 ```js
 plantuml({
   // URL of the PlantUML server (default: 'http://www.plantuml.com/plantuml/png/')
   serverUrl: 'https://your-custom-plantuml-server.com/plantuml/png/',
+   
+  // Timeout for HTTP requests in milliseconds (default: 10000)
+  timeout: 10000,
   
+  // Whether to add CSS classes to wrapper elements (default: true)
+  addWrapperClasses: true,
+  
+  // Language identifier in code blocks (default: 'plantuml')
+  language: 'plantuml'
+})
+```
+
+**Using pre-generated diagrams for prod builds:**
+
+```js
+plantuml({
+  // URL of the PlantUML server (default: 'http://www.plantuml.com/plantuml/svg/')
+  serverUrl: 'https://your-custom-plantuml-server.com/plantuml/svg/',
+  
+  // Expected image format, either PNG or SVG
+  format: 'svg', 
+   
   // Path for storing/reading pre-generated diagrams (default: undefined)
   // When set, enables local file lookup with server fallback
-  diagramsPath: 'diagrams',
+  diagramsPath: process.env.NODE_ENV === 'production' ? 'diagrams' : undefined,
   
   // Timeout for HTTP requests in milliseconds (default: 10000)
   timeout: 10000,

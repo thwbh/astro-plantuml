@@ -23,7 +23,7 @@ interface PlantUMLBlock {
  */
 export function createGeneratePlugin(options: PlantUMLOptions = {}): Plugin<[], Root> {
   const format = options.format || 'svg';
-  const serverUrl = options.serverUrl || `http://localhost:8080/${format}/`;
+  const serverUrl = options.serverUrl || `https://www.plantuml.com/plantuml/${format}/`;
   const timeout = options.timeout || 10000;
   const language = options.language || 'plantuml';
   const diagramsPath = options.diagramsPath || 'diagrams';
