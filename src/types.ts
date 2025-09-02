@@ -25,4 +25,24 @@ export interface PlantUMLOptions {
      * @default 'plantuml'
      */
     language?: string;
+    
+    /**
+     * Output format for PlantUML diagrams
+     * @default 'png'
+     */
+    format?: 'png' | 'svg';
+    
+    /**
+     * Remove inline styles from SVG elements for better CSS control
+     * Only applies when format is 'svg'
+     * @default false
+     */
+    removeInlineStyles?: boolean;
+    
+    /**
+     * Use pre-generated SVG files from local filesystem instead of server generation
+     * When enabled, looks for SVG files in 'diagrams' directory next to markdown files
+     * @default false
+     */
+    useLocalFiles?: boolean;
   }
