@@ -19,7 +19,7 @@ export function createRemarkPlugin(options: PlantUMLOptions = {}): Plugin<[], Ro
   const addWrapperClasses = options.addWrapperClasses !== false;
   const language = options.language || 'plantuml';
   const removeInlineStyles = options.removeInlineStyles || false;
-  const useLocalFiles = options.useLocalFiles || false;
+  const diagramsPath = options.diagramsPath;
 
   return function remarkPlantuml() {
     return async function transformer(tree: Root, file: any) {
@@ -68,30 +68,39 @@ export function createRemarkPlugin(options: PlantUMLOptions = {}): Plugin<[], Ro
 
           let htmlContent: string = '';
           
-          // Check for local files first if enabled
-          if (useLocalFiles && format === 'svg') {
-            const localSvg = findLocalSVG(content.trim(), currentFilePath);
+          // Check for local files first if diagramsPath is configured
+          if (diagramsPath) {
+            const localFile = findLocalFile(content.trim(), currentFilePath, diagramsPath, format);
             
-            if (localSvg) {
-              console.log('Using local SVG file for PlantUML diagram');
+            if (localFile) {
+              console.log(`Using local ${format.toUpperCase()} file for PlantUML diagram`);
               
-              let svgContent = localSvg;
-              
-              // Remove inline styles if requested
-              if (removeInlineStyles) {
-                svgContent = removeInlineStylesFromSvg(svgContent);
-              }
-              
-              // Add CSS classes to the SVG element if wrapper classes are enabled
-              if (addWrapperClasses && !svgContent.includes('class=')) {
-                svgContent = svgContent.replace('<svg', '<svg class="plantuml-svg"');
-              }
-              
-              htmlContent = `<figure${addWrapperClasses ? ' class="plantuml-diagram"' : ''}>
+              if (format === 'svg' && typeof localFile === 'string') {
+                let svgContent = localFile;
+                
+                // Remove inline styles if requested
+                if (removeInlineStyles) {
+                  svgContent = removeInlineStylesFromSvg(svgContent);
+                }
+                
+                // Add CSS classes to the SVG element if wrapper classes are enabled
+                if (addWrapperClasses && !svgContent.includes('class=')) {
+                  svgContent = svgContent.replace('<svg', '<svg class="plantuml-svg"');
+                }
+                
+                htmlContent = `<figure${addWrapperClasses ? ' class="plantuml-diagram"' : ''}>
   ${svgContent}
 </figure>`;
+              } else if (format === 'png' && Buffer.isBuffer(localFile)) {
+                // For PNG, convert to base64 data URL
+                const base64Image = localFile.toString('base64');
+                const imgSrc = `data:image/png;base64,${base64Image}`;
+                htmlContent = `<figure${addWrapperClasses ? ' class="plantuml-diagram"' : ''}>
+  <img src="${imgSrc}" alt="PlantUML Diagram"${addWrapperClasses ? ' class="plantuml-img"' : ''} />
+</figure>`;
+              }
             } else {
-              console.warn('Local SVG file not found, falling back to server generation');
+              console.warn(`Local ${format.toUpperCase()} file not found, falling back to server generation`);
               // Fall through to server generation
             }
           }
@@ -190,9 +199,9 @@ function encodePlantUmlForUrl(plantUmlText: string): string {
 }
 
 /**
- * Find local SVG file for PlantUML content
+ * Find local file for PlantUML content (SVG or PNG)
  */
-function findLocalSVG(content: string, currentFilePath?: string): string | null {
+function findLocalFile(content: string, currentFilePath?: string, diagramsPath: string = 'diagrams', format: string = 'svg'): string | Buffer | null {
   if (!currentFilePath) {
     return null;
   }
@@ -215,19 +224,23 @@ function findLocalSVG(content: string, currentFilePath?: string): string | null 
     return null;
   }
   
-  const diagramsDir = path.join(projectRoot, 'diagrams');
+  const diagramsDir = path.join(projectRoot, diagramsPath);
   
   // Use relative path for unique naming (same as generation script)
   const relativePath = path.relative(projectRoot, currentFilePath);
   const baseFileName = relativePath.replace(/[\/\\]/g, '-').replace(/\.md$/, '');
-  const svgFileName = `${baseFileName}-${hash}.svg`;
-  const svgPath = path.join(diagramsDir, svgFileName);
+  const fileName = `${baseFileName}-${hash}.${format}`;
+  const filePath = path.join(diagramsDir, fileName);
   
-  if (fs.existsSync(svgPath)) {
+  if (fs.existsSync(filePath)) {
     try {
-      return fs.readFileSync(svgPath, 'utf8');
+      if (format === 'svg') {
+        return fs.readFileSync(filePath, 'utf8');
+      } else if (format === 'png') {
+        return fs.readFileSync(filePath);
+      }
     } catch (error) {
-      console.warn(`Failed to read local SVG file: ${svgPath}`, error);
+      console.warn(`Failed to read local ${format.toUpperCase()} file: ${filePath}`, error);
       return null;
     }
   }

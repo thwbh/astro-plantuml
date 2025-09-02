@@ -40,9 +40,10 @@ export interface PlantUMLOptions {
     removeInlineStyles?: boolean;
     
     /**
-     * Use pre-generated SVG files from local filesystem instead of server generation
-     * When enabled, looks for SVG files in 'diagrams' directory next to markdown files
-     * @default false
+     * Path where diagram files are stored/generated, relative to project root
+     * When set, the plugin will look for pre-generated diagrams in this directory
+     * If not found, it falls back to server generation
+     * @default undefined (always use server)
      */
-    useLocalFiles?: boolean;
+    diagramsPath?: string;
   }

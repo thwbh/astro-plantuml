@@ -3,6 +3,7 @@ import { createRemarkPlugin } from './remark-plugin.js';
 import type { PlantUMLOptions } from './types.js';
 
 export { type PlantUMLOptions } from './types.js';
+export { createGeneratePlugin } from './remark-plugin-generate.js';
 
 /**
  * Creates an Astro integration for converting PlantUML code blocks to images
@@ -18,7 +19,7 @@ export default function astroPlantUML(options: PlantUMLOptions = {}): AstroInteg
     ...options
   };
 
-  return {
+  const integration: AstroIntegration = {
     name: 'astro-plantuml',
     hooks: {
       'astro:config:setup': ({ updateConfig, config }: { updateConfig: (newConfig: Partial<AstroConfig>) => void, config: AstroConfig }) => {
@@ -40,4 +41,6 @@ export default function astroPlantUML(options: PlantUMLOptions = {}): AstroInteg
       }
     }
   };
+  
+  return integration;
 }
